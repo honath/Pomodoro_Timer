@@ -51,8 +51,6 @@ function InitialState({
         totalRemaining: Math.min(timerData.totalRemaining + 60, 900),
       });
     }
-
-    console.log(timerData.focusDuration);
   }
 
   //Return JSX

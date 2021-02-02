@@ -17,7 +17,6 @@ function Pomodoro() {
   };
 
   const [timerData, setTimerData] = useState({ ...initialTimerData });
-  const endSound = new Audio("../../public/alarm/submarine-dive-horn.mp3");
 
   //Timer regulation
   if (timerData.inSession) {
@@ -28,14 +27,12 @@ function Pomodoro() {
         isBreak: true,
         timeRemaining: timerData.breakDuration * 60,
       });
-      endSound.play();
     } else if (timerData.isBreak && timerData.timeRemaining <= 0) {
       setTimerData({
         ...timerData,
         isBreak: false,
         timeRemaining: timerData.focusDuration * 60,
       });
-      endSound.play();
     }
   }
 
