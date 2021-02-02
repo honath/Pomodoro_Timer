@@ -1,9 +1,8 @@
 import React from "react";
-import useInterval from "../utils/useInterval";
 import BreakCheck from "./BreakCheck.js";
 import PauseCheck from "./PauseCheck.js";
 
-function ActiveState({ timerData, setTimerData, formattedDurations }) {
+function ActiveState({ timerData, formattedDurations }) {
   //If timer is not active/in session, do not show additional HTML
   if (!timerData.inSession) return null;
 
