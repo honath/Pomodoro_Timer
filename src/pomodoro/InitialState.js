@@ -22,42 +22,37 @@ function InitialState({
   }
 
   //Handle duration adjuster clicks
-  function handleDurationClick({ target }) {
+  function handleDurationClick(target) {
     //Check bounds on focus duration
-    if (5 < timerData.focusDuration && timerData.focusDuration < 60) {
-      if (target.value === "decreaseFocus") {
-        setTimerData({
-          ...timerData,
-          focusDuration: timerData.focusDuration - 5,
-          timeRemaining: timerData.timeRemaining - 300,
-          totalRemaining: timerData.totalRemaining - 300
-        });
-      } else if (target.value === "increaseFocus") {
-        setTimerData({
-          ...timerData,
-          focusDuration: timerData.focusDuration + 5,
-          timeRemaining: timerData.timeRemaining + 300,
-          totalRemaining: timerData.totalRemaining + 300
-        });
-      }
+    if (target === "decreaseFocus") {
+      setTimerData({
+        ...timerData,
+        focusDuration: Math.max(timerData.focusDuration - 5, 5),
+        timeRemaining: Math.max(timerData.timeRemaining - 300, 300),
+        totalRemaining: Math.max(timerData.totalRemaining - 300, 300),
+      });
+    } else if (target === "increaseFocus") {
+      setTimerData({
+        ...timerData,
+        focusDuration: Math.min(timerData.focusDuration + 5, 60),
+        timeRemaining: Math.min(timerData.timeRemaining + 300, 3600),
+        totalRemaining: Math.min(timerData.totalRemaining + 300, 3600),
+      });
+    } else if (target === "decreaseBreak") {
+      setTimerData({
+        ...timerData,
+        breakDuration: Math.max(timerData.breakDuration - 1, 1),
+        totalRemaining: Math.max(timerData.totalRemaining - 60, 60),
+      });
+    } else if (target === "increaseBreak") {
+      setTimerData({
+        ...timerData,
+        breakDuration: Math.min(timerData.breakDuration + 1, 15),
+        totalRemaining: Math.min(timerData.totalRemaining + 60, 900),
+      });
     }
 
-    //Check bounds on break duration
-    if (1 < timerData.breakDuration && timerData.breakDuration < 15) {
-      if (target.value === "decreaseBreak") {
-        setTimerData({
-          ...timerData,
-          breakDuration: timerData.breakDuration - 1,
-          totalRemaining: timerData.totalRemaining - 60
-        });
-      } else if (target.value === "increaseBreak") {
-        setTimerData({
-          ...timerData,
-          breakDuration: timerData.breakDuration + 1,
-          totalRemaining: timerData.totalRemaining + 60
-        });
-      }
-    }
+    console.log(timerData.focusDuration);
   }
 
   //Return JSX
@@ -74,9 +69,8 @@ function InitialState({
                 type="button"
                 className="btn btn-secondary"
                 data-testid="decrease-focus"
-                value="decreaseFocus"
                 disabled={timerData.inSession}
-                onClick={handleDurationClick}
+                onClick={() => handleDurationClick("decreaseFocus")}
               >
                 <span className="oi oi-minus" />
               </button>
@@ -84,9 +78,8 @@ function InitialState({
                 type="button"
                 className="btn btn-secondary"
                 data-testid="increase-focus"
-                value="increaseFocus"
                 disabled={timerData.inSession}
-                onClick={handleDurationClick}
+                onClick={() => handleDurationClick("increaseFocus")}
               >
                 <span className="oi oi-plus" />
               </button>
@@ -104,9 +97,8 @@ function InitialState({
                   type="button"
                   className="btn btn-secondary"
                   data-testid="decrease-break"
-                  value="decreaseBreak"
                   disabled={timerData.inSession}
-                  onClick={handleDurationClick}
+                  onClick={() => handleDurationClick("decreaseBreak")}
                 >
                   <span className="oi oi-minus" />
                 </button>
@@ -114,9 +106,8 @@ function InitialState({
                   type="button"
                   className="btn btn-secondary"
                   data-testid="increase-break"
-                  value="increaseBreak"
                   disabled={timerData.inSession}
-                  onClick={handleDurationClick}
+                  onClick={() => handleDurationClick("increaseBreak")}
                 >
                   <span className="oi oi-plus" />
                 </button>
@@ -137,7 +128,7 @@ function InitialState({
               className="btn btn-primary"
               data-testid="play-pause"
               title="Start or pause timer"
-              onClick={playPause}
+              onClick={() => playPause()}
             >
               <span
                 className={classNames({
@@ -152,7 +143,7 @@ function InitialState({
               className="btn btn-secondary"
               title="Stop the session"
               disabled={!timerData.inSession}
-              onClick={stopSession}
+              onClick={() => stopSession()}
             >
               <span className="oi oi-media-stop" />
             </button>
