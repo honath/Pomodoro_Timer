@@ -2,7 +2,7 @@ import React from "react";
 import BreakCheck from "./BreakCheck.js";
 import PauseCheck from "./PauseCheck.js";
 
-function ActiveState({ timerData, formattedDurations }) {
+function ActiveState({ timerData, setTimerData, formattedDurations }) {
   //If timer is not active/in session, do not show additional HTML
   if (!timerData.inSession) return null;
 
@@ -18,6 +18,8 @@ function ActiveState({ timerData, formattedDurations }) {
   if (timerData.timeRemaining < startingTime) {
     percentage = Math.round(100 * (remainingTime / startingTime));
   }
+
+  
 
   //Return JSX
   return (

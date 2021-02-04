@@ -3,6 +3,7 @@ import useInterval from "../utils/useInterval";
 import InitialState from "./InitialState.js";
 import ActiveState from "./ActiveState.js";
 import { minutesToDuration, secondsToDuration } from "../utils/duration";
+import playAudio from "./PlayAudio.js";
 
 function Pomodoro() {
   //Initialize timer data and state
@@ -10,6 +11,7 @@ function Pomodoro() {
     isTimerRunning: false,
     inSession: false,
     isBreak: false,
+    playing: false,
     focusDuration: 25,
     breakDuration: 5,
     timeRemaining: 1500, //(25 min * 60 sec as default)
@@ -17,24 +19,6 @@ function Pomodoro() {
   };
 
   const [timerData, setTimerData] = useState({ ...initialTimerData });
-
-  //Timer regulation
-  if (timerData.inSession) {
-    //Focus or break ends
-    if (!timerData.isBreak && timerData.timeRemaining <= 0) {
-      setTimerData({
-        ...timerData,
-        isBreak: true,
-        timeRemaining: timerData.breakDuration * 60,
-      });
-    } else if (timerData.isBreak && timerData.timeRemaining <= 0) {
-      setTimerData({
-        ...timerData,
-        isBreak: false,
-        timeRemaining: timerData.focusDuration * 60,
-      });
-    }
-  }
 
   //Format durations for display
   const formattedDurations = {
@@ -44,6 +28,36 @@ function Pomodoro() {
     breakSeconds: secondsToDuration(timerData.breakDuration * 60),
     timer: secondsToDuration(timerData.timeRemaining),
   };
+
+  //Timer regulation
+  if (timerData.inSession) {
+    //Focus or break ends
+    if (!timerData.isBreak && timerData.timeRemaining <= 0) {
+      setTimerData({
+        ...timerData,
+        playing: true,
+        isBreak: true,
+        timeRemaining: timerData.breakDuration * 60,
+      });
+    } else if (timerData.isBreak && timerData.timeRemaining <= 0) {
+      setTimerData({
+        ...timerData,
+        playing: true,
+        isBreak: false,
+        timeRemaining: timerData.focusDuration * 60,
+      });
+    }
+
+    //Play notification ding when alarm finishes, reset ding status
+    if (timerData.playing) {
+      playAudio();
+
+      setTimerData({
+        ...timerData,
+        playing: false,
+      }); 
+    }
+  }
 
   //Set useInterval to reduce time remaining by 1 second
   useInterval(
@@ -66,10 +80,11 @@ function Pomodoro() {
         formattedDurations={formattedDurations}
       />
       <ActiveState
-        initialTimerData={initialTimerData}
         timerData={timerData}
+        setTimerData={setTimerData}
         formattedDurations={formattedDurations}
       />
+      <audio id="notification" src=".\audio\ding.mp3"></audio>
     </div>
   );
 }
