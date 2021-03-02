@@ -11,8 +11,6 @@ Control state and component display to provide a quality experience and an accur
 - Installing packages with NPM
 - React function components
 - Hooks useState() and useInterval()
-- Mocha
-- Chai
 - Bootstrap v4.5
 
 ## Structure
